@@ -35,7 +35,6 @@ class MyHomePage extends StatelessWidget {
       ),
       body: CellCalendar(
         cellCalendarPageController: cellCalendarPageController,
-        events: _sampleEvents,
         daysOfTheWeekBuilder: (dayIndex) {
           final labels = ["S", "M", "T", "W", "T", "F", "S"];
           return Padding(
@@ -114,6 +113,13 @@ class MyHomePage extends StatelessWidget {
         onPageChanged: (firstDate, lastDate) {
           /// Called when the page was changed
           /// Fetch additional events by using the range between [firstDate] and [lastDate] if you want
+        },
+        dayOfTheMonthBuilder: (
+          DateTime date,
+          bool isToday,
+          bool isCurrentMonth,
+        ) {
+          return Text('${date.day}');
         },
       ),
     );

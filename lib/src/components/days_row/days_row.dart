@@ -13,12 +13,14 @@ class DaysRow extends StatelessWidget {
     required this.visiblePageDate,
     required this.dates,
     required this.dateTextStyle,
+    this.dayOfTheMonthBuilder,
     Key? key,
   }) : super(key: key);
 
   final List<DateTime> dates;
   final DateTime visiblePageDate;
   final TextStyle? dateTextStyle;
+  final MonthDayBuilder? dayOfTheMonthBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class DaysRow extends StatelessWidget {
             date,
             visiblePageDate,
             dateTextStyle,
+            dayOfTheMonthBuilder,
           );
         }).toList(),
       ),
@@ -40,11 +43,17 @@ class DaysRow extends StatelessWidget {
 ///
 /// Its height is circulated by [MeasureSize] and notified by [CellHeightController]
 class _DayCell extends StatelessWidget {
-  _DayCell(this.date, this.visiblePageDate, this.dateTextStyle);
+  _DayCell(
+    this.date,
+    this.visiblePageDate,
+    this.dateTextStyle,
+    this.dayOfTheMonthBuilder,
+  );
 
   final DateTime date;
   final DateTime visiblePageDate;
   final TextStyle? dateTextStyle;
+  final MonthDayBuilder? dayOfTheMonthBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -72,21 +81,28 @@ class _DayCell extends StatelessWidget {
               Provider.of<CellHeightController>(context, listen: false)
                   .onChanged(size);
             },
-            child: Column(
-              children: [
-                isToday
-                    ? _TodayLabel(
-                        date: date,
-                        dateTextStyle: dateTextStyle,
-                      )
-                    : _DayLabel(
-                        date: date,
-                        visiblePageDate: visiblePageDate,
-                        dateTextStyle: dateTextStyle,
-                      ),
-                EventLabels(date),
-              ],
-            ),
+            child: dayOfTheMonthBuilder != null
+                ? Column(
+                    children: [
+                      dayOfTheMonthBuilder!.call(
+                          date, isToday, visiblePageDate.month == date.month)
+                    ],
+                  )
+                : Column(
+                    children: [
+                      isToday
+                          ? _TodayLabel(
+                              date: date,
+                              dateTextStyle: dateTextStyle,
+                            )
+                          : _DayLabel(
+                              date: date,
+                              visiblePageDate: visiblePageDate,
+                              dateTextStyle: dateTextStyle,
+                            ),
+                      EventLabels(date),
+                    ],
+                  ),
           ),
         ),
       ),

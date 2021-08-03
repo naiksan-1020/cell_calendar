@@ -18,7 +18,7 @@ const List<String> _DaysOfTheWeek = [
 class DaysOfTheWeek extends StatelessWidget {
   DaysOfTheWeek(this.daysOfTheWeekBuilder);
 
-  final daysBuilder? daysOfTheWeekBuilder;
+  final WeekDaysBuilder? daysOfTheWeekBuilder;
 
   Widget defaultLabels(index) {
     return Padding(

@@ -11,9 +11,12 @@ import 'controllers/cell_calendar_page_controller.dart';
 import 'controllers/cell_height_controller.dart';
 import 'date_extension.dart';
 
-typedef daysBuilder = Widget Function(int dayIndex);
+typedef WeekDaysBuilder = Widget Function(int dayOftheWeekIndex);
 
-typedef monthYearBuilder = Widget Function(DateTime? visibleDateTime);
+typedef MonthDayBuilder = Widget Function(
+    DateTime date, bool isToday, bool isCurrentMonth);
+
+typedef MonthYearBuilder = Widget Function(DateTime? visibleDateTime);
 
 class TodayUIConfig {
   final Color todayMarkColor;
@@ -33,6 +36,7 @@ class CellCalendar extends StatelessWidget {
     this.onCellTapped,
     this.todayMarkColor = Colors.blue,
     this.todayTextColor = Colors.white,
+    this.dayOfTheMonthBuilder,
     this.daysOfTheWeekBuilder,
     this.monthYearLabelBuilder,
     this.dateTextStyle,
@@ -44,9 +48,11 @@ class CellCalendar extends StatelessWidget {
   ///
   /// 0 for Sunday, 6 for Saturday.
   /// By default, it returns English labels
-  final daysBuilder? daysOfTheWeekBuilder;
+  final WeekDaysBuilder? daysOfTheWeekBuilder;
 
-  final monthYearBuilder? monthYearLabelBuilder;
+  final MonthYearBuilder? monthYearLabelBuilder;
+
+  final MonthDayBuilder? dayOfTheMonthBuilder;
 
   final TextStyle? dateTextStyle;
 
@@ -73,6 +79,7 @@ class CellCalendar extends StatelessWidget {
         Provider.value(value: TodayUIConfig(todayTextColor, todayMarkColor)),
       ],
       child: _CalendarPageView(
+        dayOfTheMonthBuilder,
         daysOfTheWeekBuilder,
         monthYearLabelBuilder,
         dateTextStyle,
@@ -85,14 +92,16 @@ class CellCalendar extends StatelessWidget {
 /// Shows [MonthYearLabel] and PageView of [_CalendarPage]
 class _CalendarPageView extends StatelessWidget {
   _CalendarPageView(
+    this.dayOfTheMonthBuilder,
     this.daysOfTheWeekBuilder,
     this.monthYearLabelBuilder,
     this.dateTextStyle,
     this.cellCalendarPageController,
   );
 
-  final daysBuilder? daysOfTheWeekBuilder;
-  final monthYearBuilder? monthYearLabelBuilder;
+  final MonthDayBuilder? dayOfTheMonthBuilder;
+  final WeekDaysBuilder? daysOfTheWeekBuilder;
+  final MonthYearBuilder? monthYearLabelBuilder;
   final TextStyle? dateTextStyle;
   final CellCalendarPageController? cellCalendarPageController;
 
@@ -109,6 +118,7 @@ class _CalendarPageView extends StatelessWidget {
             itemBuilder: (context, index) {
               return _CalendarPage(
                 index.visibleDateTime,
+                dayOfTheMonthBuilder,
                 daysOfTheWeekBuilder,
                 dateTextStyle,
               );
@@ -130,13 +140,15 @@ class _CalendarPageView extends StatelessWidget {
 class _CalendarPage extends StatelessWidget {
   const _CalendarPage(
     this.visiblePageDate,
+    this.dayOfTheMonthBuilder,
     this.daysOfTheWeekBuilder,
     this.dateTextStyle, {
     Key? key,
   }) : super(key: key);
 
   final DateTime visiblePageDate;
-  final daysBuilder? daysOfTheWeekBuilder;
+  final MonthDayBuilder? dayOfTheMonthBuilder;
+  final WeekDaysBuilder? daysOfTheWeekBuilder;
   final TextStyle? dateTextStyle;
 
   List<DateTime> _getCurrentDays(DateTime dateTime) {
@@ -170,6 +182,7 @@ class _CalendarPage extends StatelessWidget {
                   visiblePageDate: visiblePageDate,
                   dates: days.getRange(index * 7, (index + 1) * 7).toList(),
                   dateTextStyle: dateTextStyle,
+                  dayOfTheMonthBuilder: dayOfTheMonthBuilder,
                 );
               },
             ),

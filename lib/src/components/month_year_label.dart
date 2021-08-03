@@ -12,7 +12,7 @@ class MonthYearLabel extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final monthYearBuilder? monthYearLabelBuilder;
+  final MonthYearBuilder? monthYearLabelBuilder;
 
   @override
   Widget build(BuildContext context) {

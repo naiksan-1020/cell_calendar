@@ -114,13 +114,13 @@ class MyHomePage extends StatelessWidget {
           /// Called when the page was changed
           /// Fetch additional events by using the range between [firstDate] and [lastDate] if you want
         },
-        dayOfTheMonthBuilder: (
-          DateTime date,
-          bool isToday,
-          bool isCurrentMonth,
-        ) {
-          return Text('${date.day}');
-        },
+        // dayOfTheMonthBuilder: (
+        //   DateTime date,
+        //   bool isToday,
+        //   bool isCurrentMonth,
+        // ) {
+        //   return Text('${date.day}');
+        // },
       ),
     );
   }
